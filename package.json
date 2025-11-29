@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "@prisma/client": "^7.0.1",
+    "fastify": "^5.6.2"
+  },
+  "name": "salesforce-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "prisma": "^6.19.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
