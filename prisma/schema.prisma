@@ -13,20 +13,24 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id        String   @id @default(uuid())
   name      String?
   email     String   @unique
-  role      String @default("COMPANY")
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  company   Company?
 }
 
 model Company {
   id        String   @id @default(uuid())
   name      String
   cnpj      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  phone     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
 }
