@@ -21,21 +21,17 @@ model User {
   password  String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  company   Company?
   tokens    Token[]
-}
-
-enum TypeToken {
-  PASSWORD_RECOVER
+  company   Company?
+  clients   Client[]
 }
 
 model Token {
-  id        String     @id @default(uuid())
-  token     String     @unique
-  type      TypeToken  @default(PASSWORD_RECOVER)
-  userId    String     @map("user_id")
-  user      User       @relation(fields: [userId], references: [id])
-  createdAt DateTime   @default(now()) @map("created_at")
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model Company {
@@ -48,3 +44,17 @@ model Company {
   userId    String   @unique @map("user_id")
   user      User     @relation(fields: [userId], references: [id])
 }
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  cpf       String   @unique
+  phone     String
+  observation String?
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+

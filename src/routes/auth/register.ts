@@ -3,6 +3,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import {prisma} from "@/lib/prisma.js";
 import { hash } from "bcryptjs";
+import { BadRequestError } from "../_errors/bad-request-error.js";
 
 export async function register(app: FastifyInstance) {
     
@@ -26,7 +27,7 @@ export async function register(app: FastifyInstance) {
             }
         });
         if(existingCompany){
-            return reply.status(400).send({ message: "Company with this CNPJ already exists!" });
+            throw new BadRequestError("CNPJ already exists!");
         }
 
         const existingUser = await prisma.user.findUnique({
@@ -35,7 +36,7 @@ export async function register(app: FastifyInstance) {
             }
         });
         if(existingUser){
-            return reply.status(400).send({ message: "Email already exists!" });
+            throw new BadRequestError("Email already exists!");
         }
 
         // create user and company

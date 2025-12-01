@@ -3,6 +3,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import {prisma} from "@/lib/prisma.js";
 import { compare } from "bcryptjs";
+import { BadRequestError } from "../_errors/bad-request-error.js";
 
 export async function login(app: FastifyInstance) {
     
@@ -29,17 +30,17 @@ export async function login(app: FastifyInstance) {
         });
 
         if(!user){
-            return reply.status(400).send({ message: "Invalid email or password!" });
+            throw new BadRequestError("Invalid email or password!");
         }
 
         const isPasswordValid = await compare(password, user.password);
 
         if(!isPasswordValid){
-            return reply.status(400).send({ message: "Invalid email or password!" });
+            throw new BadRequestError("Invalid email or password!");
         }
 
         const token = await reply.jwtSign({
-            id: user.id,
+            sub: user.id,
             email: user.email,
         }, {
             sign: { expiresIn: "1d" }
