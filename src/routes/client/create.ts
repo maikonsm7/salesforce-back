@@ -2,27 +2,33 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import { prisma } from "../../lib/prisma.js";
+import { auth } from "@/middlewares/auth.js";
+import { BadRequestError } from "../_errors/bad-request-error.js";
+
 export async function createClient(app: FastifyInstance){
-    app.withTypeProvider<ZodTypeProvider>().post("/", {
+    app.withTypeProvider<ZodTypeProvider>()
+    .register(auth)
+    .post("/", {
         schema: {
             body: z.object({
                 name: z.string().min(2),
                 cpf: z.string().min(11).max(11),
                 phone: z.string().min(10).max(11),
                 observation: z.string().optional(),
-                userId: z.string().min(1),
             })
         },
     }, async (request, reply) => {
         const { name, cpf, phone, observation } = request.body;
+        const userId = await request.getCurrentUserId();
         const existingClient = await prisma.client.findUnique({
             where: {
                 cpf,
+                userId,
             }
         });
 
         if(existingClient){
-            return reply.status(400).send({ message: "Client with this cpf already exists!" });
+            throw new BadRequestError('Client with this CPF already exists!');
         }
         const newClient = await prisma.client.create({
             data: {
@@ -30,11 +36,10 @@ export async function createClient(app: FastifyInstance){
                 cpf,
                 phone,
                 observation,
-                userId: request.user.sub,
+                userId,
             }
         });
-        });
-
         return reply.status(201).send({ message: "Client created successfully!", client: newClient });
+        
     });
 }

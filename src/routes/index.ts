@@ -6,6 +6,12 @@ import { getProfile } from "./auth/get-profile.js";
 import { passwordRecover } from "./auth/password-recover.js";
 import { passwordReset } from "./auth/password-reset.js";
 
+// client routes
+import { createClient } from "./client/create.js";
+import { getById } from "./client/get-by-id.js";
+import { getAll } from "./client/get-all.js";
+import { updateClient } from "./client/update.js";
+
 export async function appRoutes(app: FastifyInstance){
 
     // auth routes group
@@ -23,5 +29,13 @@ export async function appRoutes(app: FastifyInstance){
         authGroup.register(passwordReset)
 
     }, {prefix: '/auth'})
+
+    // client routes group
+    app.register(async clientGroup => {
+        clientGroup.register(createClient);
+        clientGroup.register(getById);
+        clientGroup.register(getAll);
+        clientGroup.register(updateClient);
+    }, {prefix: '/clients'});
     
 }
