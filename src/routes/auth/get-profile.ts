@@ -9,16 +9,17 @@ export async function getProfile(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .get("/profile", async (request, reply) => {
-        const userId = await request.getCurrentUserId();
+        const currentUser = request.user;
         const user = await prisma.user.findUnique({
             where: {
-                id: userId,
+                id: currentUser.sub,
             },
             select: {
                 id: true,
                 name: true,
                 email: true,
                 role: true,
+                companyId: true,
             }
         });
 

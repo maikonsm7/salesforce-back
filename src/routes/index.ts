@@ -12,6 +12,12 @@ import { getClientById } from "./client/get-by-id.js";
 import { getAllClients } from "./client/get-all.js";
 import { updateClient } from "./client/update.js";
 
+// production routes
+import { createProduction } from "./production/create.js";
+import { getProductionById } from "./production/get-by-id.js";
+import { getAllProductions } from "./production/get-all.js";
+import { updateProduction } from "./production/update.js";
+
 export async function appRoutes(app: FastifyInstance){
 
     // auth routes group
@@ -37,5 +43,13 @@ export async function appRoutes(app: FastifyInstance){
         clientGroup.register(getAllClients);
         clientGroup.register(updateClient);
     }, {prefix: '/clients'});
+
+    // production routes group
+    app.register(async productionGroup => {
+        productionGroup.register(createProduction)
+        productionGroup.register(getProductionById)
+        productionGroup.register(getAllProductions)
+        productionGroup.register(updateProduction)
+    }, {prefix: 'productions'})
     
 }

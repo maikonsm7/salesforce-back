@@ -43,6 +43,7 @@ export async function login(app: FastifyInstance) {
             sub: user.id,
             email: user.email,
             role: user.role,
+            companyId: user.companyId
         }, {
             sign: { expiresIn: "1d" }
         });

@@ -16,19 +16,12 @@ export async function getClientById(app: FastifyInstance){
         },
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
-        const userId = await request.getCurrentUserId();
-        const company = await prisma.company.findUnique({
-            where: {
-                userId,
-            },
-        });
-        if (!company) {
-            throw new BadRequestError('Company not found!');
-        }
+        const currentUser = request.user;
+        
         const client = await prisma.client.findFirst({
             where: {
                 id,
-                companyId: company.id,
+                companyId: currentUser.companyId,
             },
             select: {
                 id: true,

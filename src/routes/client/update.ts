@@ -5,69 +5,58 @@ import { prisma } from "../../lib/prisma.js";
 import { auth } from "@/middlewares/auth.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
 
-export async function updateClient(app: FastifyInstance){
+export async function updateClient(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>()
-    .register(auth)
-    .patch("/:id", {
-        schema: {
-            body: z.object({
-                name: z.string().min(1).optional(),
-                cpf: z.string().min(11).max(14).optional(),
-                phone: z.string().min(10).max(15).optional(),
-                observation: z.string().max(500).optional(),
-            }),
-            params: z.object({
-                id: z.uuid(),
-            }),
-        },
-    }, async (request, reply) => {
-        const { id } = request.params as { id: string };
-        const {cpf} = request.body;
-
-        const userId = await request.getCurrentUserId();
-        const company = await prisma.company.findUnique({
-            where: {
-                userId,
+        .register(auth)
+        .patch("/:id", {
+            schema: {
+                body: z.object({
+                    name: z.string().min(1).optional(),
+                    cpf: z.string().min(11).max(14).optional(),
+                    phone: z.string().min(10).max(15).optional(),
+                    observation: z.string().max(500).optional(),
+                }),
+                params: z.object({
+                    id: z.uuid(),
+                }),
             },
-        });
-        if (!company) {
-            throw new BadRequestError("Company not found for the user.");
-        }
-        
-        
-        const existingClient = await prisma.client.findFirst({
-            where: {
-                id,
-                companyId: company.id,
-            },
-        });
-
-        if (!existingClient) {
-            throw new BadRequestError("Client not found.");
-        }
-
-        const cpfInUse = await prisma.client.findFirst({
-            where: {
-                cpf,
-                companyId: company.id,
-                id: {
-                    not: id,
+        }, async (request, reply) => {
+            const { id } = request.params as { id: string };
+            const { cpf } = request.body;
+            const currentUser = request.user;
+            const existingClient = await prisma.client.findFirst({
+                where: {
+                    id,
+                    companyId: currentUser.companyId,
                 },
-            },
-        });
+            });
 
-        if (cpfInUse) {
-            throw new BadRequestError("CPF already in use by another client.");
-        }
+            if (!existingClient) {
+                throw new BadRequestError("Client not found.");
+            }
 
-        const updatedClient = await prisma.client.update({
-            where: {
-                id,
-            },
-            data: {
-                ...request.body,
-            },
+            const cpfInUse = await prisma.client.findFirst({
+                where: {
+                    cpf,
+                    companyId: currentUser.companyId,
+                    id: {
+                        not: id,
+                    },
+                },
+            });
+
+            if (cpfInUse) {
+                throw new BadRequestError("CPF already in use by another client.");
+            }
+
+            const updatedClient = await prisma.client.update({
+                where: {
+                    id,
+                },
+                data: {
+                    ...request.body,
+                },
+            });
+            return reply.status(200).send({ message: "Client updated successfully", client: updatedClient });
         });
-        return reply.status(200).send({ message: "Client updated successfully", client: updatedClient });
-    });
 }

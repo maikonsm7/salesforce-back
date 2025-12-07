@@ -39,7 +39,15 @@ export async function register(app: FastifyInstance) {
             throw new BadRequestError("Email already exists!");
         }
 
-        // create user and company
+        // create company and user
+        const newCompany = await prisma.company.create({
+            data: {
+                name,
+                cnpj,
+                phone,
+            }
+        });
+
         const hashedPassword = await hash(password, 6);
         const newUser = await prisma.user.create({
             data: {
@@ -47,16 +55,10 @@ export async function register(app: FastifyInstance) {
                 email,
                 password: hashedPassword,
                 role: 'ADMIN',
+                companyId: newCompany.id,
             }
         });
-        const newCompany = await prisma.company.create({
-            data: {
-                name,
-                cnpj,
-                phone,
-                userId: newUser.id,
-            }
-        });
+        
         return reply.status(201).send({ message: "Company created!" });
     });
 }
