@@ -46,6 +46,7 @@ export async function register(app: FastifyInstance) {
                 name,
                 email,
                 password: hashedPassword,
+                role: 'ADMIN',
             }
         });
         const newCompany = await prisma.company.create({

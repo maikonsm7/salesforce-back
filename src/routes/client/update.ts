@@ -22,13 +22,23 @@ export async function updateClient(app: FastifyInstance){
         },
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
-        const userId = await request.getCurrentUserId();
         const {cpf} = request.body;
+
+        const userId = await request.getCurrentUserId();
+        const company = await prisma.company.findUnique({
+            where: {
+                userId,
+            },
+        });
+        if (!company) {
+            throw new BadRequestError("Company not found for the user.");
+        }
+        
         
         const existingClient = await prisma.client.findFirst({
             where: {
                 id,
-                userId,
+                companyId: company.id,
             },
         });
 
@@ -39,7 +49,7 @@ export async function updateClient(app: FastifyInstance){
         const cpfInUse = await prisma.client.findFirst({
             where: {
                 cpf,
-                userId,
+                companyId: company.id,
                 id: {
                     not: id,
                 },

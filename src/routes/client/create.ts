@@ -20,10 +20,20 @@ export async function createClient(app: FastifyInstance){
     }, async (request, reply) => {
         const { name, cpf, phone, observation } = request.body;
         const userId = await request.getCurrentUserId();
-        const existingClient = await prisma.client.findUnique({
+        const company = await prisma.company.findUnique({
+            where: {
+                userId,
+            }
+        });
+
+        if(!company){
+            throw new BadRequestError('Company not found!');
+        }
+
+        const existingClient = await prisma.client.findFirst({
             where: {
                 cpf,
-                userId,
+                companyId: company.id,
             }
         });
 
@@ -36,7 +46,8 @@ export async function createClient(app: FastifyInstance){
                 cpf,
                 phone,
                 observation,
-                userId,
+                companyId: company?.id,
+                createdById: userId,
             }
         });
         return reply.status(201).send({ message: "Client created successfully!", client: newClient });

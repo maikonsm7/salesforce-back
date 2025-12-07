@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -14,47 +14,79 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Roles {
+  MASTER
+  ADMIN
+  ATTENDANT
+}
+
 model User {
-  id        String   @id @default(uuid())
-  name      String?
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  tokens    Token[]
-  company   Company?
-  clients   Client[]
+  id                 String       @id @default(uuid())
+  name               String?
+  email              String       @unique
+  password           String
+  role               Roles        @default(ATTENDANT)
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime?    @updatedAt @map("updated_at")
+  tokens             Token[]
+  company            Company?
+  createdClients     Client[]     @relation("ClientCreatedBy")
+  updatedClients     Client[]     @relation("ClientUpdatedBy")
+  createdProductions Production[] @relation("ProductionCreatedBy")
 }
 
 model Token {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 }
 
 model Company {
-  id        String   @id @default(uuid())
-  name      String
-  cnpj      String   @unique
-  phone     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  userId    String   @unique @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
+  id          String       @id @default(uuid())
+  name        String
+  cnpj        String       @unique
+  phone       String
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime?    @updatedAt @map("updated_at")
+  userId      String       @unique @map("user_id")
+  user        User         @relation(fields: [userId], references: [id])
+  clients     Client[]
+  productions Production[]
 }
 
 model Client {
-  id        String   @id @default(uuid())
-  name      String
-  cpf       String   @unique
-  phone     String
+  id          String       @id @default(uuid())
+  name        String
+  cpf         String
+  phone       String
   observation String?
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  companyId   String       @map("company_id")
+  company     Company      @relation(fields: [companyId], references: [id])
+  createdById String       @map("created_by_id")
+  createdBy   User         @relation(name: "ClientCreatedBy", fields: [createdById], references: [id])
+  updatedById String?      @map("updated_by_id")
+  updatedBy   User?        @relation(name: "ClientUpdatedBy", fields: [updatedById], references: [id])
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime?    @updatedAt @map("updated_at")
+  productions Production[]
 }
 
-
+model Production {
+  id           String    @id @default(uuid())
+  consignado   Float?
+  conta        Int?
+  cartao       Int?
+  lime         Int?
+  chess        Int?
+  microsseguro Int?
+  createdById  String    @map("created_by_id")
+  createdBy    User      @relation(name: "ProductionCreatedBy", fields: [createdById], references: [id])
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
+  company      Company   @relation(fields: [companyId], references: [id])
+  companyId    String    @map("company_id")
+  client       Client    @relation(fields: [clientId], references: [id])
+  clientId     String    @map("client_id")
+}

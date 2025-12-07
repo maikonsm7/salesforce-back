@@ -8,8 +8,8 @@ import { passwordReset } from "./auth/password-reset.js";
 
 // client routes
 import { createClient } from "./client/create.js";
-import { getById } from "./client/get-by-id.js";
-import { getAll } from "./client/get-all.js";
+import { getClientById } from "./client/get-by-id.js";
+import { getAllClients } from "./client/get-all.js";
 import { updateClient } from "./client/update.js";
 
 export async function appRoutes(app: FastifyInstance){
@@ -33,8 +33,8 @@ export async function appRoutes(app: FastifyInstance){
     // client routes group
     app.register(async clientGroup => {
         clientGroup.register(createClient);
-        clientGroup.register(getById);
-        clientGroup.register(getAll);
+        clientGroup.register(getClientById);
+        clientGroup.register(getAllClients);
         clientGroup.register(updateClient);
     }, {prefix: '/clients'});
     

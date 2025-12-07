@@ -5,7 +5,7 @@ import { prisma } from "../../lib/prisma.js";
 import { auth } from "@/middlewares/auth.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
 
-export async function getById(app: FastifyInstance){
+export async function getClientById(app: FastifyInstance){
     app.withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .get("/:id", {
@@ -17,10 +17,18 @@ export async function getById(app: FastifyInstance){
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const userId = await request.getCurrentUserId();
+        const company = await prisma.company.findUnique({
+            where: {
+                userId,
+            },
+        });
+        if (!company) {
+            throw new BadRequestError('Company not found!');
+        }
         const client = await prisma.client.findFirst({
             where: {
                 id,
-                userId,
+                companyId: company.id,
             },
             select: {
                 id: true,

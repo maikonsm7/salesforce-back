@@ -3,3 +3,4 @@ node_modules
 docker-compose.yml
 /src/generated/prisma
 /prisma/seed.ts
+/generated/prisma
