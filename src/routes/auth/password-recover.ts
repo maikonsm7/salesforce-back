@@ -37,8 +37,6 @@ export async function passwordRecover(app: FastifyInstance) {
                     }
                 })
 
-                // send email with link to reset password
-                console.log('Recover password link: ', code);
-                return reply.status(201).send();
+                return reply.status(201).send({message: "Link enviado no email!", code});
             });
 }

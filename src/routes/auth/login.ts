@@ -48,6 +48,14 @@ export async function login(app: FastifyInstance) {
             sign: { expiresIn: "1d" }
         });
 
-        return reply.status(200).send({ message: "Login successful!", token });
+        const dataUser = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            companyId: user.companyId,
+        }
+
+        return reply.status(200).send({ message: "Login successful!", token, user: dataUser });
     });
 }

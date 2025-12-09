@@ -16,8 +16,8 @@ app.register(fastifyJwt, {
     secret: process.env.SECRET_JWT as string,
 })
 
-app.register(appRoutes)
+app.register(appRoutes, {prefix: "/api"})
 
-app.listen({port: 3001}).then(()=>{
+app.listen({port: 3000}).then(()=>{
     console.log('🚀 Http server running!')
 })
