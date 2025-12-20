@@ -11,11 +11,11 @@ export async function updateProduction(app: FastifyInstance) {
         .patch("/:id", {
             schema: {
                 body: z.object({
-                    consignado: z.number().optional(),
-                    conta: z.number().optional(),
-                    cartao: z.number().optional(),
-                    lime: z.number().optional(),
-                    chess: z.number().optional(),
+                    consignado: z.coerce.number().optional(),
+                    conta: z.coerce.number().optional(),
+                    cartao: z.coerce.number().optional(),
+                    lime: z.coerce.number().optional(),
+                    chess: z.coerce.number().optional(),
                     microsseguro: z.number().optional(),
                 }),
                 params: z.object({

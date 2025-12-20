@@ -11,7 +11,10 @@ app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
 
 app.setErrorHandler(errorHandler)
-app.register(fastifyCors);
+app.register(fastifyCors, {
+    origin: process.env.ORIGIN_URL as string,
+    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+});
 app.register(fastifyJwt, {
     secret: process.env.SECRET_JWT as string,
 })
