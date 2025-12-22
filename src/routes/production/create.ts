@@ -2,15 +2,13 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import { prisma } from "../../lib/prisma.js";
-import { auth } from "@/middlewares/auth.js";
 
 export async function createProduction(app: FastifyInstance){
     app.withTypeProvider<ZodTypeProvider>()
-    .register(auth)
     .post("/", {
         schema: {
             body: z.object({
-                consignado: z.number().optional(),
+                consignado: z.coerce.number().optional(),
                 conta: z.coerce.number().optional(),
                 cartao: z.coerce.number().optional(),
                 lime: z.coerce.number().optional(),
@@ -28,7 +26,7 @@ export async function createProduction(app: FastifyInstance){
                 companyId: currentUser.companyId,
             }
         });
-        return reply.status(201).send({ message: "Product created successfully!", product: newProduction });
+        return reply.status(201).send({ message: "Produção inserida com sucesso", product: newProduction });
         
     });
 }

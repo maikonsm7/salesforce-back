@@ -28,7 +28,7 @@ export async function passwordReset(app: FastifyInstance) {
                 });
 
                 if (!token) {
-                    throw new Error('Invalid or expired token!');
+                    throw new Error('Token inválido ou expirado');
                 }
 
                 const hashedPassword = await bcrypt.hash(password, 6);

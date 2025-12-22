@@ -31,7 +31,7 @@ export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
         }
 
         return reply.status(400).send({
-            message: "Validation error.",
+            message: "Erro ao validar",
             errors: fieldErrors,
         });
     }

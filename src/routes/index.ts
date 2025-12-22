@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { auth } from "@/middlewares/auth.js";
+import { verifyRole } from "@/middlewares/permissions.js";
 
 // auth routes
 import { register } from "./auth/register.js";
@@ -25,6 +26,7 @@ import { createProduction } from "./production/create.js";
 import { getProductionById } from "./production/get-by-id.js";
 import { getAllProductions } from "./production/get-all.js";
 import { updateProduction } from "./production/update.js";
+import { deleteProduction } from "./production/delete.js";
 
 export async function appRoutes(app: FastifyInstance){
 
@@ -47,6 +49,7 @@ export async function appRoutes(app: FastifyInstance){
     // user routes group
     app.register(async userGroup => {
         userGroup.register(auth);
+        userGroup.addHook("preHandler", verifyRole(['MASTER', 'ADMIN']))
         userGroup.register(createUser);
         userGroup.register(getUserById);
         userGroup.register(getAllUsers);
@@ -55,6 +58,7 @@ export async function appRoutes(app: FastifyInstance){
 
     // client routes group
     app.register(async clientGroup => {
+        clientGroup.register(auth)
         clientGroup.register(createClient);
         clientGroup.register(getClientById);
         clientGroup.register(getAllClients);
@@ -63,10 +67,12 @@ export async function appRoutes(app: FastifyInstance){
 
     // production routes group
     app.register(async productionGroup => {
+        productionGroup.register(auth)
         productionGroup.register(createProduction)
         productionGroup.register(getProductionById)
         productionGroup.register(getAllProductions)
         productionGroup.register(updateProduction)
+        productionGroup.register(deleteProduction)
     }, {prefix: 'productions'})
     
 }

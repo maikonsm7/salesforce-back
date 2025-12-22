@@ -2,12 +2,10 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { prisma } from "../../lib/prisma.js";
-import { auth } from "@/middlewares/auth.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
 
 export async function updateClient(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>()
-        .register(auth)
         .patch("/:id", {
             schema: {
                 body: z.object({
@@ -32,7 +30,7 @@ export async function updateClient(app: FastifyInstance) {
             });
 
             if (!existingClient) {
-                throw new BadRequestError("Client not found.");
+                throw new BadRequestError("Cliente não encontrado");
             }
 
             const cpfInUse = await prisma.client.findFirst({
@@ -46,7 +44,7 @@ export async function updateClient(app: FastifyInstance) {
             });
 
             if (cpfInUse) {
-                throw new BadRequestError("CPF already in use by another client.");
+                throw new BadRequestError("CPF já em uso");
             }
 
             const updatedClient = await prisma.client.update({
@@ -57,6 +55,6 @@ export async function updateClient(app: FastifyInstance) {
                     ...request.body,
                 },
             });
-            return reply.status(200).send({ message: "Client updated successfully", client: updatedClient });
+            return reply.status(200).send({ message: "Cliente atualizado com sucesso", client: updatedClient });
         });
 }

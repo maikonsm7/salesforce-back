@@ -11,6 +11,10 @@ export async function updateUser(app: FastifyInstance) {
                 body: z.object({
                     name: z.string().min(2),
                     email: z.email(),
+                    active: z.preprocess(
+                        val => val === 'true',
+                        z.boolean(),
+                    ),
                 }),
                 params: z.object({
                     id: z.uuid(),

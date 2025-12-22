@@ -25,6 +25,8 @@ export async function getUserById(app: FastifyInstance){
                 id: true,
                 name: true,
                 email: true,
+                active: true,
+                createdAt: true,
             }
         });
         if (!user) {

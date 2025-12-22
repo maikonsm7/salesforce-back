@@ -11,6 +11,7 @@ export async function register(app: FastifyInstance) {
         schema: {
             body: z.object({
                 name: z.string(),
+                nameUser: z.string(),
                 cnpj: z.string().min(14).max(14),
                 phone: z.string(),
                 email: z.email(),
@@ -18,7 +19,7 @@ export async function register(app: FastifyInstance) {
             })
         },
     }, async (request, reply) => {
-        const { name, cnpj, phone, email, password } = request.body;
+        const { name, nameUser, cnpj, phone, email, password } = request.body;
 
         // validations
         const existingCompany = await prisma.company.findUnique({
@@ -27,7 +28,7 @@ export async function register(app: FastifyInstance) {
             }
         });
         if(existingCompany){
-            throw new BadRequestError("CNPJ already exists!");
+            throw new BadRequestError("CNPJ já em uso");
         }
 
         const existingUser = await prisma.user.findUnique({
@@ -36,7 +37,7 @@ export async function register(app: FastifyInstance) {
             }
         });
         if(existingUser){
-            throw new BadRequestError("Email already exists!");
+            throw new BadRequestError("Email já em uso");
         }
 
         // create company and user
@@ -51,7 +52,7 @@ export async function register(app: FastifyInstance) {
         const hashedPassword = await hash(password, 6);
         const newUser = await prisma.user.create({
             data: {
-                name,
+                name: nameUser,
                 email,
                 password: hashedPassword,
                 role: 'ADMIN',
@@ -59,6 +60,6 @@ export async function register(app: FastifyInstance) {
             }
         });
         
-        return reply.status(201).send({ message: "Company created!" });
+        return reply.status(201).send({ message: "Cadastro efetuado com sucesso" });
     });
 }

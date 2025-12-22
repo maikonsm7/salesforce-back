@@ -17,6 +17,7 @@ export async function getAllUsers(app: FastifyInstance){
                 id: true,
                 name: true,
                 email: true,
+                active: true,
             },
             orderBy: {
                 name: 'asc'

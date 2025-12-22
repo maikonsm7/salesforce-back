@@ -2,12 +2,10 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 import { prisma } from "../../lib/prisma.js";
-import { auth } from "@/middlewares/auth.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
 
 export async function createClient(app: FastifyInstance){
     app.withTypeProvider<ZodTypeProvider>()
-    .register(auth)
     .post("/", {
         schema: {
             body: z.object({
@@ -29,7 +27,7 @@ export async function createClient(app: FastifyInstance){
         });
 
         if(existingClient){
-            throw new BadRequestError('Client with this CPF already exists!');
+            throw new BadRequestError('CPF já em uso');
         }
         const newClient = await prisma.client.create({
             data: {
@@ -41,7 +39,7 @@ export async function createClient(app: FastifyInstance){
                 createdById: currentUser.sub,
             }
         });
-        return reply.status(201).send({ message: "Client created successfully!", client: newClient });
+        return reply.status(201).send({ message: "Cliente cadastrado com sucesso", client: newClient });
         
     });
 }
