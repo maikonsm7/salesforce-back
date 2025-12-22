@@ -8,6 +8,7 @@ import { login } from "./auth/login.js";
 import { getProfile } from "./auth/get-profile.js";
 import { passwordRecover } from "./auth/password-recover.js";
 import { passwordReset } from "./auth/password-reset.js";
+import { passwordUpdate } from "./auth/password-update.js";
 
 // user routes
 import { createUser } from "./user/create.js";
@@ -43,6 +44,7 @@ export async function appRoutes(app: FastifyInstance){
         authGroup.register(getProfile)
         authGroup.register(passwordRecover)
         authGroup.register(passwordReset)
+        authGroup.register(passwordUpdate)
 
     }, {prefix: '/auth'})
 
