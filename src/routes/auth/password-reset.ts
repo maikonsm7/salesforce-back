@@ -28,7 +28,7 @@ export async function passwordReset(app: FastifyInstance) {
                 });
 
                 if (!token) {
-                    throw new Error('Token inválido ou expirado');
+                    throw new Error('Código inválido ou expirado');
                 }
 
                 const hashedPassword = await bcrypt.hash(password, 6);
@@ -48,6 +48,6 @@ export async function passwordReset(app: FastifyInstance) {
                     }
                 });
 
-                return reply.status(200).send();
+                return reply.status(200).send({message: 'Senha cadastrada com sucesso'});
             });
 }

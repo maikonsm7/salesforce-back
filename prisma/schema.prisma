@@ -29,6 +29,7 @@ model Company {
   users       User[]
   clients     Client[]
   productions Production[]
+  grantDates  GrantDate[]
 }
 
 model User {
@@ -46,6 +47,7 @@ model User {
   createdClients Client[]     @relation("ClientCreatedBy")
   updatedClients Client[]     @relation("ClientUpdatedBy")
   productions    Production[]
+  grantDates     GrantDate[]
 }
 
 model Token {
@@ -71,6 +73,7 @@ model Client {
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime?    @updatedAt @map("updated_at")
   productions Production[]
+  grantDates  GrantDate[]
 }
 
 model Production {
@@ -81,6 +84,19 @@ model Production {
   lime         Int?
   chess        Int?
   microsseguro Int?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
+  createdBy    User      @relation(fields: [createdById], references: [id])
+  createdById  String    @map("created_by_id")
+  company      Company   @relation(fields: [companyId], references: [id])
+  companyId    String    @map("company_id")
+  client       Client    @relation(fields: [clientId], references: [id])
+  clientId     String    @map("client_id")
+}
+
+model GrantDate {
+  id           String    @id @default(uuid())
+  date         DateTime  @db.Date
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @updatedAt @map("updated_at")
   createdBy    User      @relation(fields: [createdById], references: [id])

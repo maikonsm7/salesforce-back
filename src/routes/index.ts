@@ -29,6 +29,13 @@ import { getAllProductions } from "./production/get-all.js";
 import { updateProduction } from "./production/update.js";
 import { deleteProduction } from "./production/delete.js";
 
+// grant date routes
+import { createGrantDate } from "./grant-date/create.js";
+import { getGrantDateById } from "./grant-date/get-by-id.js";
+import { getAllGrantDates } from "./grant-date/get-all.js";
+import { updateGrantDate } from "./grant-date/update.js";
+import { deleteGrantDate } from "./grant-date/delete.js";
+
 export async function appRoutes(app: FastifyInstance){
 
     // auth routes group
@@ -76,5 +83,15 @@ export async function appRoutes(app: FastifyInstance){
         productionGroup.register(updateProduction)
         productionGroup.register(deleteProduction)
     }, {prefix: 'productions'})
+
+    // grant date routes group
+    app.register(async grantDateGroup => {
+        grantDateGroup.register(auth)
+        grantDateGroup.register(createGrantDate)
+        grantDateGroup.register(getGrantDateById)
+        grantDateGroup.register(getAllGrantDates)
+        grantDateGroup.register(updateGrantDate)
+        grantDateGroup.register(deleteGrantDate)
+    }, {prefix: 'grant-dates'})
     
 }

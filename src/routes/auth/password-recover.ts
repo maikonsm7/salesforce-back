@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { prisma } from "@/lib/prisma.js";
 import z from "zod";
+import sendEmail from "@/helpers/send-email.js";
 
 export async function passwordRecover(app: FastifyInstance) {
 
@@ -28,7 +29,7 @@ export async function passwordRecover(app: FastifyInstance) {
                 });
 
                 if (!user) {
-                    return reply.status(200).send()
+                    return reply.status(201).send({message: 'Email enviado com sucesso'});
                 }
 
                 const {id: code} = await prisma.token.create({
@@ -37,6 +38,12 @@ export async function passwordRecover(app: FastifyInstance) {
                     }
                 })
 
-                return reply.status(201).send({message: "Link enviado no email!", code});
+                await sendEmail({
+                    to: user.email,
+                    subject: 'Recuperação de senha',
+                    text: `Olá ${user.name}, clique no link para recuperar sua senha: ${process.env.ORIGIN_URL}/password-reset/${code}`,
+                    });
+
+                return reply.status(201).send({message: 'Email enviado com sucesso'});
             });
 }
