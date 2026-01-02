@@ -25,11 +25,13 @@ export async function getProductionById(app: FastifyInstance) {
                     select: {
                         id: true,
                         consignado: true,
+                        parcelado: true,
                         conta: true,
                         cartao: true,
                         lime: true,
                         chess: true,
                         microsseguro: true,
+                        consorcio: true,
                         createdById: true,
                         createdAt: true,
                         updatedAt: true,
@@ -60,11 +62,13 @@ export async function getProductionById(app: FastifyInstance) {
                 select: {
                     id: true,
                     consignado: true,
+                    parcelado: true,
                     conta: true,
                     cartao: true,
                     lime: true,
                     chess: true,
                     microsseguro: true,
+                    consorcio: true,
                     createdAt: true,
                     clientId: true,
                     client: {

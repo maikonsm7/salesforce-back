@@ -30,6 +30,7 @@ model Company {
   clients     Client[]
   productions Production[]
   grantDates  GrantDate[]
+  alerts      Alert[]
 }
 
 model User {
@@ -48,6 +49,7 @@ model User {
   updatedClients Client[]     @relation("ClientUpdatedBy")
   productions    Production[]
   grantDates     GrantDate[]
+  alerts         Alert[]
 }
 
 model Token {
@@ -74,16 +76,19 @@ model Client {
   updatedAt   DateTime?    @updatedAt @map("updated_at")
   productions Production[]
   grantDates  GrantDate[]
+  alerts      Alert[]
 }
 
 model Production {
   id           String    @id @default(uuid())
   consignado   Float?
+  parcelado    Float?
   conta        Int?
   cartao       Int?
   lime         Int?
   chess        Int?
   microsseguro Int?
+  consorcio    Int?
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @updatedAt @map("updated_at")
   createdBy    User      @relation(fields: [createdById], references: [id])
@@ -97,6 +102,20 @@ model Production {
 model GrantDate {
   id           String    @id @default(uuid())
   date         DateTime  @db.Date
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
+  createdBy    User      @relation(fields: [createdById], references: [id])
+  createdById  String    @map("created_by_id")
+  company      Company   @relation(fields: [companyId], references: [id])
+  companyId    String    @map("company_id")
+  client       Client    @relation(fields: [clientId], references: [id])
+  clientId     String    @map("client_id")
+}
+
+model Alert {
+  id           String    @id @default(uuid())
+  date         DateTime  @db.Date
+  description  String
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @updatedAt @map("updated_at")
   createdBy    User      @relation(fields: [createdById], references: [id])

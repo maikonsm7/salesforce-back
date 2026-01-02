@@ -36,6 +36,17 @@ import { getAllGrantDates } from "./grant-date/get-all.js";
 import { updateGrantDate } from "./grant-date/update.js";
 import { deleteGrantDate } from "./grant-date/delete.js";
 
+// dashboard routes
+import { getProductionReport } from "./dashboard/get-production-report.js";
+
+// alert routes
+import { createAlert } from "./alert/create.js";
+import { getAllAlerts } from "./alert/get-all.js";
+import { getAlertById } from "./alert/get-by-id.js";
+import { getTodayAlerts } from "./alert/get-today-alerts.js";
+import { updateAlert } from "./alert/update.js";
+import { deleteAlert } from "./alert/delete.js";
+
 export async function appRoutes(app: FastifyInstance){
 
     // auth routes group
@@ -93,5 +104,22 @@ export async function appRoutes(app: FastifyInstance){
         grantDateGroup.register(updateGrantDate)
         grantDateGroup.register(deleteGrantDate)
     }, {prefix: 'grant-dates'})
+
+    // dashboard routes group
+    app.register(async dashboardGroup => {
+        dashboardGroup.register(auth)
+        dashboardGroup.register(getProductionReport)
+    }, {prefix: 'dashboard'})
+
+    // alert routes group
+    app.register(async alertGroup => {
+        alertGroup.register(auth)
+        alertGroup.register(createAlert)
+        alertGroup.register(getAllAlerts)
+        alertGroup.register(getAlertById)
+        alertGroup.register(getTodayAlerts)
+        alertGroup.register(updateAlert)
+        alertGroup.register(deleteAlert)
+    }, {prefix: 'alerts'})
     
 }

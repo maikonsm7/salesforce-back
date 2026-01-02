@@ -9,11 +9,13 @@ export async function createProduction(app: FastifyInstance){
         schema: {
             body: z.object({
                 consignado: z.coerce.number().optional(),
+                parcelado: z.coerce.number().optional(),
                 conta: z.coerce.number().optional(),
                 cartao: z.coerce.number().optional(),
                 lime: z.coerce.number().optional(),
                 chess: z.coerce.number().optional(),
                 microsseguro: z.coerce.number().optional(),
+                consorcio: z.coerce.number().optional(),
                 clientId: z.uuid(),
             })
         },

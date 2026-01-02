@@ -4,19 +4,13 @@ import { z } from "zod";
 import { prisma } from "../../lib/prisma.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
 
-export async function updateProduction(app: FastifyInstance) {
+export async function updateAlert(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>()
         .patch("/:id", {
             schema: {
                 body: z.object({
-                    consignado: z.coerce.number().optional(),
-                    parcelado: z.coerce.number().optional(),
-                    conta: z.coerce.number().optional(),
-                    cartao: z.coerce.number().optional(),
-                    lime: z.coerce.number().optional(),
-                    chess: z.coerce.number().optional(),
-                    microsseguro: z.coerce.number().optional(),
-                    consorcio: z.coerce.number().optional(),
+                    date: z.coerce.date(),
+                    description: z.string(),
                     clientId: z.uuid(),
                 }),
                 params: z.object({
@@ -27,18 +21,18 @@ export async function updateProduction(app: FastifyInstance) {
             const { id } = request.params as { id: string };
             const currentUser = request.user;
 
-            const existingProduction = await prisma.production.findUnique({
+            const existsAlert = await prisma.alert.findUnique({
                 where: {
                     id,
                     createdById: currentUser.sub,
                 },
             });
 
-            if (!existingProduction) {
-                throw new BadRequestError("Produção não encontrada");
+            if (!existsAlert) {
+                throw new BadRequestError("Alerta não encontrado");
             }
 
-            const updatedProduction = await prisma.production.update({
+            const updatedAlert = await prisma.alert.update({
                 where: {
                     id,
                 },
@@ -46,6 +40,6 @@ export async function updateProduction(app: FastifyInstance) {
                     ...request.body,
                 },
             });
-            return reply.status(200).send({ message: "Produção atualizada com sucesso", product: updatedProduction });
+            return reply.status(200).send({ message: "Alerta atualizado com sucesso", alert: updatedAlert });
         });
 }

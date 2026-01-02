@@ -18,11 +18,13 @@ export async function getAllProductions(app: FastifyInstance) {
                     select: {
                         id: true,
                         consignado: true,
+                        parcelado: true,
                         conta: true,
                         cartao: true,
                         lime: true,
                         chess: true,
                         microsseguro: true,
+                        consorcio: true,
                         createdAt: true,
                         updatedAt: true,
                         createdById: true,
@@ -52,11 +54,13 @@ export async function getAllProductions(app: FastifyInstance) {
                 select: {
                     id: true,
                     consignado: true,
+                    parcelado: true,
                     conta: true,
                     cartao: true,
                     lime: true,
                     chess: true,
                     microsseguro: true,
+                    consorcio: true,
                     createdById: true,
                     createdAt: true,
                     client: {
