@@ -31,12 +31,16 @@ export async function updateGrantDate(app: FastifyInstance) {
                 throw new BadRequestError("Data de concessão não encontrada");
             }
 
+            const releaseDate = new Date(request.body.date);
+            releaseDate.setDate(releaseDate.getDate() + 90);
+
             const updatedGrantDate = await prisma.grantDate.update({
                 where: {
                     id,
                 },
                 data: {
                     ...request.body,
+                    releaseDate,
                 },
             });
             return reply.status(200).send({ message: "Data de concessão atualizada com sucesso", grantDate: updatedGrantDate });

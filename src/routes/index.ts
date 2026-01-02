@@ -35,6 +35,7 @@ import { getGrantDateById } from "./grant-date/get-by-id.js";
 import { getAllGrantDates } from "./grant-date/get-all.js";
 import { updateGrantDate } from "./grant-date/update.js";
 import { deleteGrantDate } from "./grant-date/delete.js";
+import { getBenefitsReleased } from "./grant-date/get-benefits-released.js";
 
 // dashboard routes
 import { getProductionReport } from "./dashboard/get-production-report.js";
@@ -103,6 +104,7 @@ export async function appRoutes(app: FastifyInstance){
         grantDateGroup.register(getAllGrantDates)
         grantDateGroup.register(updateGrantDate)
         grantDateGroup.register(deleteGrantDate)
+        grantDateGroup.register(getBenefitsReleased)
     }, {prefix: 'grant-dates'})
 
     // dashboard routes group

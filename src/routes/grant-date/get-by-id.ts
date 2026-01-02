@@ -25,6 +25,7 @@ export async function getGrantDateById(app: FastifyInstance) {
                     select: {
                         id: true,
                         date: true,
+                        releaseDate: true,
                         createdAt: true,
                         updatedAt: true,
                         createdById: true,
@@ -55,6 +56,7 @@ export async function getGrantDateById(app: FastifyInstance) {
                 select: {
                     id: true,
                     date: true,
+                    releaseDate: true,
                     createdAt: true,
                     updatedAt: true,
                     clientId: true,

@@ -102,6 +102,7 @@ model Production {
 model GrantDate {
   id           String    @id @default(uuid())
   date         DateTime  @db.Date
+  releaseDate  DateTime  @db.Date @map("release_date")
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime? @updatedAt @map("updated_at")
   createdBy    User      @relation(fields: [createdById], references: [id])
