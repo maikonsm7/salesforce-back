@@ -41,7 +41,7 @@ export async function passwordRecover(app: FastifyInstance) {
                 await sendEmail({
                     to: user.email,
                     subject: 'Recuperação de senha',
-                    text: `Olá ${user.name}, clique no link para recuperar sua senha: ${process.env.ORIGIN_URL}/password-reset/${code}`,
+                    text: `Olá ${user.name}, clique no link para recuperar sua senha: ${process.env.SITE_URL}/password-reset/${code}`,
                     });
 
                 return reply.status(201).send({message: 'Email enviado com sucesso'});
