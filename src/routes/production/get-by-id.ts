@@ -16,48 +16,10 @@ export async function getProductionById(app: FastifyInstance) {
             const { id } = request.params as { id: string };
             const currentUser = request.user;
 
-            if (currentUser.role === 'ADMIN' || 'MASTER') {
-                const production = await prisma.production.findUnique({
-                    where: {
-                        id,
-                        companyId: currentUser.companyId,
-                    },
-                    select: {
-                        id: true,
-                        consignado: true,
-                        parcelado: true,
-                        conta: true,
-                        cartao: true,
-                        lime: true,
-                        chess: true,
-                        microsseguro: true,
-                        consorcio: true,
-                        createdById: true,
-                        createdAt: true,
-                        updatedAt: true,
-                        clientId: true,
-                        createdBy: {
-                            select: {
-                                name: true,
-                            }
-                        },
-                        client: {
-                            select: {
-                                name: true,
-                            }
-                        }
-                    }
-                });
-                if (!production) {
-                    throw new BadRequestError('Produção não encontrada');
-                }
-                return reply.status(200).send({ production });
-            }
-
             const production = await prisma.production.findUnique({
                 where: {
                     id,
-                    createdById: currentUser.sub
+                    companyId: currentUser.companyId,
                 },
                 select: {
                     id: true,
@@ -69,8 +31,15 @@ export async function getProductionById(app: FastifyInstance) {
                     chess: true,
                     microsseguro: true,
                     consorcio: true,
+                    createdById: true,
                     createdAt: true,
+                    updatedAt: true,
                     clientId: true,
+                    createdBy: {
+                        select: {
+                            name: true,
+                        }
+                    },
                     client: {
                         select: {
                             name: true,
@@ -82,5 +51,6 @@ export async function getProductionById(app: FastifyInstance) {
                 throw new BadRequestError('Produção não encontrada');
             }
             return reply.status(200).send({ production });
+
         });
 }

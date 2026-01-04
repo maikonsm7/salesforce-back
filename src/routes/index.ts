@@ -76,17 +76,23 @@ export async function appRoutes(app: FastifyInstance){
         clientGroup.register(createClient);
         clientGroup.register(getClientById);
         clientGroup.register(getAllClients);
-        clientGroup.register(updateClient);
+        clientGroup.register(async (app) => {
+            app.addHook("preHandler", verifyRole(['MASTER', 'ADMIN']))
+            app.register(updateClient);
+        })
     }, {prefix: '/clients'});
 
     // production routes group
     app.register(async productionGroup => {
         productionGroup.register(auth)
         productionGroup.register(createProduction)
-        productionGroup.register(getProductionById)
         productionGroup.register(getAllProductions)
-        productionGroup.register(updateProduction)
-        productionGroup.register(deleteProduction)
+        productionGroup.register(async (app) => {
+            app.addHook("preHandler", verifyRole(['MASTER', 'ADMIN']))
+            app.register(getProductionById)
+            app.register(updateProduction)
+            app.register(deleteProduction)
+        })
     }, {prefix: 'productions'})
 
     // dashboard routes group

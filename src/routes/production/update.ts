@@ -30,7 +30,7 @@ export async function updateProduction(app: FastifyInstance) {
             const existingProduction = await prisma.production.findUnique({
                 where: {
                     id,
-                    createdById: currentUser.sub,
+                    companyId: currentUser.companyId,
                 },
             });
 

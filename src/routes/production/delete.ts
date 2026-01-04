@@ -19,7 +19,7 @@ export async function deleteProduction(app: FastifyInstance) {
             const existingProduction = await prisma.production.findUnique({
                 where: {
                     id,
-                    createdById: currentUser.sub,
+                    companyId: currentUser.companyId,
                 },
             });
 
