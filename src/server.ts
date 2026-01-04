@@ -12,15 +12,26 @@ app.setValidatorCompiler(validatorCompiler)
 
 app.setErrorHandler(errorHandler)
 app.register(fastifyCors, {
-    origin: process.env.ORIGIN_URL as string,
-    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+    origin: (origin, cb) => {
+        const allowed = (process.env.ORIGIN_URL || "").split(',');
+        if (process.env.NODE_ENV === 'development') {
+            allowed.push('http://localhost:3000', 'http://127.0.0.1:3000');
+        }
+        if (!origin || allowed.includes(origin)) {
+            cb(null, true);
+            return;
+        }
+        cb(new Error("Não permitido por CORS"), false);
+    },
+    methods: ['GET', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
+    maxAge: 86400,
 });
 app.register(fastifyJwt, {
     secret: process.env.SECRET_JWT as string,
 })
 
-app.register(appRoutes, {prefix: "/api"})
+app.register(appRoutes, { prefix: "/api" })
 
-app.listen({port: 3000}).then(()=>{
+app.listen({ port: 3000 }).then(() => {
     console.log('🚀 Http server running!')
 })
