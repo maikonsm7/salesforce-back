@@ -4,14 +4,10 @@ import { z } from "zod";
 import { prisma } from "../../lib/prisma.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
 
-export async function updateGrantDate(app: FastifyInstance) {
+export async function completeAlert(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>()
-        .patch("/:id", {
+        .patch("/complete/:id", {
             schema: {
-                body: z.object({
-                    date: z.coerce.date(),
-                    clientId: z.uuid(),
-                }),
                 params: z.object({
                     id: z.uuid(),
                 }),
@@ -20,29 +16,25 @@ export async function updateGrantDate(app: FastifyInstance) {
             const { id } = request.params as { id: string };
             const currentUser = request.user;
 
-            const existsGrantDate = await prisma.grantDate.findUnique({
+            const existsAlert = await prisma.alert.findUnique({
                 where: {
                     id,
                     createdById: currentUser.sub,
                 },
             });
 
-            if (!existsGrantDate) {
-                throw new BadRequestError("Data de concessão não encontrada");
+            if (!existsAlert) {
+                throw new BadRequestError("Alerta não encontrado");
             }
 
-            const releaseDate = new Date(request.body.date);
-            releaseDate.setDate(releaseDate.getDate() + 90);
-
-            const updatedGrantDate = await prisma.grantDate.update({
+            const updatedAlert = await prisma.alert.update({
                 where: {
                     id,
                 },
                 data: {
-                    ...request.body,
-                    releaseDate,
+                    completed: true,
                 },
             });
-            return reply.status(200).send({ message: "Data de concessão atualizada com sucesso", grantDate: updatedGrantDate });
+            return reply.status(200).send({ message: "Alerta concluído com sucesso", alert: updatedAlert });
         });
 }

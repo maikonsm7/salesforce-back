@@ -12,11 +12,10 @@ export async function createClient(app: FastifyInstance){
                 name: z.string().min(2),
                 cpf: z.string().min(11).max(11),
                 phone: z.string().min(10).max(11),
-                observation: z.string().optional(),
             })
         },
     }, async (request, reply) => {
-        const { name, cpf, phone, observation } = request.body;
+        const { name, cpf, phone } = request.body;
         const currentUser = request.user;
 
         const existingClient = await prisma.client.findFirst({
@@ -34,7 +33,6 @@ export async function createClient(app: FastifyInstance){
                 name,
                 cpf,
                 phone,
-                observation,
                 companyId: currentUser.companyId,
                 createdById: currentUser.sub,
             }

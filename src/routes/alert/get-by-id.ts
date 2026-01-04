@@ -25,6 +25,7 @@ export async function getAlertById(app: FastifyInstance) {
                     id: true,
                     date: true,
                     description: true,
+                    completed: true,
                     clientId: true,
                     client: {
                         select: {

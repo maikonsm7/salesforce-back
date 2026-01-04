@@ -26,7 +26,6 @@ export async function getClientById(app: FastifyInstance){
                 name: true,
                 cpf: true,
                 phone: true,
-                observation: true,
             }
         });
         if (!client) {

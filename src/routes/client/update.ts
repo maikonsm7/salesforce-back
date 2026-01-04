@@ -9,10 +9,9 @@ export async function updateClient(app: FastifyInstance) {
         .patch("/:id", {
             schema: {
                 body: z.object({
-                    name: z.string().min(1).optional(),
-                    cpf: z.string().min(11).max(14).optional(),
-                    phone: z.string().min(10).max(15).optional(),
-                    observation: z.string().max(500).optional(),
+                    name: z.string().min(1),
+                    cpf: z.string().min(11).max(14),
+                    phone: z.string().min(10).max(15),
                 }),
                 params: z.object({
                     id: z.uuid(),

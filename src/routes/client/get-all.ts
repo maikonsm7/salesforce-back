@@ -15,7 +15,6 @@ export async function getAllClients(app: FastifyInstance){
                 name: true,
                 cpf: true,
                 phone: true,
-                observation: true,
             }
         });
         return reply.status(200).send({ clients });

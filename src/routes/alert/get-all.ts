@@ -12,12 +12,13 @@ export async function getAllAlerts(app: FastifyInstance) {
                     createdById: currentUser.sub,
                 },
                 orderBy: {
-                    createdAt: 'desc',
+                    date: 'desc',
                 },
                 select: {
                     id: true,
                     date: true,
                     description: true,
+                    completed: true,
                     clientId: true,
                     client: {
                         select: {

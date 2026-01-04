@@ -29,14 +29,6 @@ import { getAllProductions } from "./production/get-all.js";
 import { updateProduction } from "./production/update.js";
 import { deleteProduction } from "./production/delete.js";
 
-// grant date routes
-import { createGrantDate } from "./grant-date/create.js";
-import { getGrantDateById } from "./grant-date/get-by-id.js";
-import { getAllGrantDates } from "./grant-date/get-all.js";
-import { updateGrantDate } from "./grant-date/update.js";
-import { deleteGrantDate } from "./grant-date/delete.js";
-import { getBenefitsReleased } from "./grant-date/get-benefits-released.js";
-
 // dashboard routes
 import { getProductionReport } from "./dashboard/get-production-report.js";
 
@@ -47,6 +39,7 @@ import { getAlertById } from "./alert/get-by-id.js";
 import { getTodayAlerts } from "./alert/get-today-alerts.js";
 import { updateAlert } from "./alert/update.js";
 import { deleteAlert } from "./alert/delete.js";
+import { completeAlert } from "./alert/complete.js";
 
 export async function appRoutes(app: FastifyInstance){
 
@@ -96,20 +89,10 @@ export async function appRoutes(app: FastifyInstance){
         productionGroup.register(deleteProduction)
     }, {prefix: 'productions'})
 
-    // grant date routes group
-    app.register(async grantDateGroup => {
-        grantDateGroup.register(auth)
-        grantDateGroup.register(createGrantDate)
-        grantDateGroup.register(getGrantDateById)
-        grantDateGroup.register(getAllGrantDates)
-        grantDateGroup.register(updateGrantDate)
-        grantDateGroup.register(deleteGrantDate)
-        grantDateGroup.register(getBenefitsReleased)
-    }, {prefix: 'grant-dates'})
-
     // dashboard routes group
     app.register(async dashboardGroup => {
         dashboardGroup.register(auth)
+        dashboardGroup.addHook("preHandler", verifyRole(['MASTER', 'ADMIN']))
         dashboardGroup.register(getProductionReport)
     }, {prefix: 'dashboard'})
 
@@ -122,6 +105,7 @@ export async function appRoutes(app: FastifyInstance){
         alertGroup.register(getTodayAlerts)
         alertGroup.register(updateAlert)
         alertGroup.register(deleteAlert)
+        alertGroup.register(completeAlert)
     }, {prefix: 'alerts'})
     
 }

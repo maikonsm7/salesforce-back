@@ -7,8 +7,8 @@ export async function getTodayAlerts(app: FastifyInstance) {
         .get("/today-alerts", async (request, reply) => {
             const currentUser = request.user;
 
-            const inicioDoDia = new Date();
-            inicioDoDia.setUTCHours(0, 0, 0, 0);
+            // const inicioDoDia = new Date();
+            // inicioDoDia.setUTCHours(0, 0, 0, 0);
 
             const fimDoDia = new Date();
             fimDoDia.setUTCHours(23, 59, 59, 999);
@@ -16,8 +16,9 @@ export async function getTodayAlerts(app: FastifyInstance) {
             const alerts = await prisma.alert.findMany({
                 where: {
                     createdById: currentUser.sub,
+                    completed: false,
                     date: {
-                        gte: inicioDoDia,
+                        // gte: inicioDoDia,
                         lte: fimDoDia,
                     },
                 },
