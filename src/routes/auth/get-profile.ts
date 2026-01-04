@@ -1,8 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import { prisma } from "@/lib/prisma.js";
+import { prisma } from "src/lib/prisma.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
-import { auth } from "@/middlewares/auth.js";
+import { auth } from "src/middlewares/auth.js";
 
 export async function getProfile(app: FastifyInstance) {
 

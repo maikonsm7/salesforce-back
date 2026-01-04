@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import { prisma } from "@/lib/prisma.js";
+import { prisma } from "src/lib/prisma.js";
 import bcrypt from "bcryptjs";
 import z from "zod";
 

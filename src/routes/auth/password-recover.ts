@@ -1,8 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import { prisma } from "@/lib/prisma.js";
+import { prisma } from "src/lib/prisma.js";
 import z from "zod";
-import sendEmail from "@/helpers/send-email.js";
+import sendEmail from "src/helpers/send-email.js";
 
 export async function passwordRecover(app: FastifyInstance) {
 

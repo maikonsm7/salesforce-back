@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { UnauthorizedError } from "@/routes/_errors/unauthorization-error.js";
+import { UnauthorizedError } from "src/routes/_errors/unauthorization-error.js";
 import fastifyPlugin from "fastify-plugin";
 import { prisma } from "../lib/prisma.js"
 

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import { auth } from "@/middlewares/auth.js";
-import { verifyRole } from "@/middlewares/permissions.js";
+import { auth } from "src/middlewares/auth.js";
+import { verifyRole } from "src/middlewares/permissions.js";
 
 // auth routes
 import { register } from "./auth/register.js";

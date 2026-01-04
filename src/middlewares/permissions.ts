@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { UnauthorizedError } from "@/routes/_errors/unauthorization-error.js";
+import { UnauthorizedError } from "src/routes/_errors/unauthorization-error.js";
 
 export const verifyRole = ((allowedRoles: string[]) => {
     return async (request: FastifyRequest, reply: FastifyReply) => {

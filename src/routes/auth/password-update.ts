@@ -2,8 +2,8 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { compare, hash } from "bcryptjs";
 import z from "zod";
-import { prisma } from "@/lib/prisma.js";
-import { auth } from "@/middlewares/auth.js";
+import { prisma } from "src/lib/prisma.js";
+import { auth } from "src/middlewares/auth.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
 
 export async function passwordUpdate(app: FastifyInstance) {
