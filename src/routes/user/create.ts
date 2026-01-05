@@ -4,6 +4,7 @@ import z from "zod";
 import { prisma } from "../../lib/prisma.js";
 import { BadRequestError } from "../_errors/bad-request-error.js";
 import { hash } from "bcryptjs";
+import randomPass from "../../helpers/random-pass.js";
 
 export async function createUser(app: FastifyInstance){
     app.withTypeProvider<ZodTypeProvider>()
@@ -28,9 +29,7 @@ export async function createUser(app: FastifyInstance){
             throw new BadRequestError('Email em uso!');
         }
 
-        const firstName = name.split(' ')[0]
-        const randomNumbers = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-        const newPass = `${firstName}${randomNumbers}`
+        const newPass = randomPass(name);
         const hashedPassword = await hash(newPass, 6)
 
         const newUser = await prisma.user.create({

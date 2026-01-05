@@ -1,12 +1,14 @@
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
-import {prisma} from "../../lib/prisma.js";
+import { prisma } from "../../lib/prisma.js";
 import { hash } from "bcryptjs";
 import { BadRequestError } from "../_errors/bad-request-error.js";
+import randomPass from "../../helpers/random-pass.js";
+import sendEmail from "../../helpers/send-email.js";
 
 export async function register(app: FastifyInstance) {
-    
+
     app.withTypeProvider<ZodTypeProvider>().post("/register", {
         schema: {
             body: z.object({
@@ -15,11 +17,10 @@ export async function register(app: FastifyInstance) {
                 cnpj: z.string().min(14).max(14),
                 phone: z.string(),
                 email: z.email(),
-                password: z.string().min(6),
             })
         },
     }, async (request, reply) => {
-        const { name, nameUser, cnpj, phone, email, password } = request.body;
+        const { name, nameUser, cnpj, phone, email } = request.body;
 
         // validations
         const existingCompany = await prisma.company.findUnique({
@@ -27,7 +28,7 @@ export async function register(app: FastifyInstance) {
                 cnpj,
             }
         });
-        if(existingCompany){
+        if (existingCompany) {
             throw new BadRequestError("CNPJ já em uso");
         }
 
@@ -36,7 +37,7 @@ export async function register(app: FastifyInstance) {
                 email,
             }
         });
-        if(existingUser){
+        if (existingUser) {
             throw new BadRequestError("Email já em uso");
         }
 
@@ -49,8 +50,9 @@ export async function register(app: FastifyInstance) {
             }
         });
 
+        const password = randomPass(nameUser);
         const hashedPassword = await hash(password, 6);
-        const newUser = await prisma.user.create({
+        await prisma.user.create({
             data: {
                 name: nameUser,
                 email,
@@ -59,7 +61,12 @@ export async function register(app: FastifyInstance) {
                 companyId: newCompany.id,
             }
         });
-        
+        await sendEmail({
+            to: email,
+            subject: 'Bem vindo(a)!',
+            text: 'Olá ' + nameUser + '!\nSeu cadastro foi efetuado com sucesso.\n\nSua senha temporária é: ' + password + '\n\nAcesse: salesforce.maikonsm.com.br',
+        });
+
         return reply.status(201).send({ message: "Cadastro efetuado com sucesso" });
     });
 }
